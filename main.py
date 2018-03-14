@@ -71,54 +71,59 @@ def main():
 
     # create perceptron with step function
     # perceptron = Perceptron(3, step_func, learning_rate=0.05)
-    perceptron = Perceptron(4, sigmoid, learning_rate=0.05)
+    perceptron = Perceptron(4, sigmoid, learning_rate=0.09)
 
     # show calculated output of perceptron after training
-    output_unlearned = []
-    error_unlearned = []
+    graphs = {'average-error': [], 'output': [], 'delta-error': [], 'o-before': [], 'e-before': [], 'o-after': [],
+              'e-after': []}
     for idx, val in enumerate(data):
         input_vec = create_input_list(data, 4, idx)
         value = perceptron.calc_output(input_vec)
-        output_unlearned.append(value)
-        error_unlearned.append(abs(value - data[idx]))
+        graphs['o-before'].append(value)
+        graphs['e-before'].append(abs(value - data[idx]))
 
     # setup parameters and train perceptron
-    epoch_counter, epochs, error, running = 0, 5, 1, True
+    epoch_counter, epochs, error, running = 0, 3, 1, True
     while epoch_counter < epochs and running:
         indices = list(range(len(data)))
         random.shuffle(indices)
         iter_count = 0
+        error_sum = 0
         for idx in indices:
             input_vec = create_input_list(data, 4, idx)
             value, error = perceptron.train(input_vec, data[idx])
-            print("Iteration", iter_count, error, running)
-            if abs(error) < 0.00001:
-                running = False
-                break
+            # print("Iteration", iter_count, error, running)
+            error_sum += abs(error)
+            # if abs(error) < 0.0000001:
+            #     running = False
+            #     break
             iter_count += 1
+        graphs['average-error'].append(error_sum/len(data))
+        print('Epoch', epoch_counter)
         epoch_counter += 1
 
     # show calculated output of perceptron after training
-    output_trained = []
-    error_trained = []
     for idx, val in enumerate(data):
         input_vec = create_input_list(data, 4, idx)
         value = perceptron.calc_output(input_vec)
-        output_trained.append(value)
-        error_trained.append(abs(value - data[idx]))
+        graphs['o-after'].append(value)
+        graphs['e-after'].append(abs(value - data[idx]))
 
     f, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
     ax1.title.set_text('Perceptron Output before Training')
     ax1.set(xlabel='Samples of track.xls', ylabel='Predicted Position')
     ax1.grid()
-    # ax1.plot(output_unlearned, 'r')
-    ax1.plot(error_unlearned, 'r')
+    ax1.plot(graphs['o-before'], 'r')
+    # ax1.plot(error_unlearned, 'r')
 
     ax2.title.set_text('Perceptron Output after Training (' + str(epochs) + ' Epochs)')
     ax2.set(xlabel='Samples of track.xls', ylabel='Predicted Position')
     ax2.grid()
-    # ax2.plot(output_trained, 'b')
-    ax2.plot(error_trained, 'b')
+    ax2.plot(graphs['o-after'], 'b')
+    # ax2.plot(error_trained, 'b')
+
+    plt.figure(2)
+    plt.plot(graphs['average-error'])
 
     plt.show()
 
