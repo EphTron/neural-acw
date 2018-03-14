@@ -54,6 +54,7 @@ class Perceptron:
                 self.weights[idx] = w + self.learning_rate * error * inputs[idx]
             return output, error
 
+
 def create_input_list(data, inputs, idx):
     input_vec = []
     if inputs > 1:
