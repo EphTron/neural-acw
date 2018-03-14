@@ -54,6 +54,14 @@ class Perceptron:
                 self.weights[idx] = w + self.learning_rate * error * inputs[idx]
             return output, error
 
+def create_input_list(data, inputs, idx):
+    input_vec = []
+    if inputs > 1:
+        for i in reversed(range(1, inputs)):
+            input_vec.append(data[idx - i]) if (idx - i >= 0) else input_vec.append(0)
+    input_vec.append(data[idx])
+    return input_vec
+
 
 def main():
     # read data and transform to list
@@ -68,11 +76,7 @@ def main():
     output_unlearned = []
     error_unlearned = []
     for idx, val in enumerate(data):
-        input_vec = []
-        input_vec.append(data[idx - 3]) if (idx - 3 >= 0) else input_vec.append(0)
-        input_vec.append(data[idx - 2]) if (idx - 2 >= 0) else input_vec.append(0)
-        input_vec.append(data[idx - 1]) if (idx - 1 >= 0) else input_vec.append(0)
-        input_vec.append(val)
+        input_vec = create_input_list(data, 4, idx)
         value = perceptron.calc_output(input_vec)
         output_unlearned.append(value)
         error_unlearned.append(abs(value - data[idx]))
@@ -84,11 +88,7 @@ def main():
         random.shuffle(indices)
         iter_count = 0
         for idx in indices:
-            input_vec = []
-            input_vec.append(data[idx - 3]) if (idx - 3 >= 0) else input_vec.append(0)
-            input_vec.append(data[idx - 2]) if (idx - 2 >= 0) else input_vec.append(0)
-            input_vec.append(data[idx - 1]) if (idx - 1 >= 0) else input_vec.append(0)
-            input_vec.append(data[idx])
+            input_vec = create_input_list(data, 4, idx)
             value, error = perceptron.train(input_vec, data[idx])
             print("Iteration", iter_count, error, running)
             if abs(error) < 0.00001:
@@ -101,11 +101,7 @@ def main():
     output_trained = []
     error_trained = []
     for idx, val in enumerate(data):
-        input_vec = []
-        input_vec.append(data[idx - 3]) if (idx - 3 >= 0) else input_vec.append(0)
-        input_vec.append(data[idx - 2]) if (idx - 2 >= 0) else input_vec.append(0)
-        input_vec.append(data[idx - 1]) if (idx - 1 >= 0) else input_vec.append(0)
-        input_vec.append(val)
+        input_vec = create_input_list(data, 4, idx)
         value = perceptron.calc_output(input_vec)
         output_trained.append(value)
         error_trained.append(abs(value - data[idx]))
