@@ -67,22 +67,22 @@ def main():
 
     # setup plots for output
     f1, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
-    ax1.title.set_text('Perceptron Output before Training')
+    ax1.title.set_text('ACW I: Perceptron Output before Training')
     ax1.set(xlabel='Samples of track.xls', ylabel='Predicted Position')
     ax1.grid()
     ax1.plot(graphs['before'], 'r')
-    ax2.title.set_text('Perceptron Output after Training')
+    ax2.title.set_text('ACW I: Perceptron Output after Training')
     ax2.set(xlabel='Samples of track.xls', ylabel='Predicted Position')
     ax2.grid()
     ax2.plot(graphs['after'], 'b')
 
     # setup plots for errors
     f1, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
-    ax1.title.set_text('Perceptron Delta Error')
+    ax1.title.set_text('ACW I: Perceptron Delta Error')
     ax1.set(xlabel='Samples of track.xls', ylabel='Deviation (Delta Error)')
     ax1.grid()
     ax1.plot(graphs['delta-error'], 'r')
-    ax2.title.set_text('Perceptron Error Change during Training')
+    ax2.title.set_text('ACW I: Perceptron Error Change during Training')
     ax2.set(xlabel='Samples of track.xls', ylabel='Predicted Position')
     ax2.grid()
     ax2.plot(graphs['error'], 'b')
