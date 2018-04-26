@@ -70,7 +70,7 @@ See code in attached file \texttt{neural\_acw\_part1.py}.
 
 \task{\textbf{b )  Start with a perceptron and show that the perceptron is not capable of learning this data. You would need to explain why?}}\\
 
-A simple perceptron uses the Heaviside step function as an activation function. It is therefore only able to create binary outputs. Figure \ref{fig:perceptron-bfr-aftr} shows that the output of the perceptron is not effected by learning. A perceptron with a step function is not suitable for this task, because the task requires continues outputs between 0 and 1.
+A simple perceptron uses the Heaviside step function as an activation function. It is therefore only able to create binary outputs. Figure \ref{fig:perceptron-bfr-aftr} shows that the output of the perceptron is not effected by learning. A perceptron with a step function is not suitable for this task, because the task requires continuous outputs between 0 and 1.
 
 \begin{figure}[htbp]
 	\begin{center}
@@ -82,12 +82,12 @@ A simple perceptron uses the Heaviside step function as an activation function. 
 
 \task{\textbf{c ) Replace the activation function with a logistic sigmoid. Show that the neuron is now capable of learning. Explain Why?}}\\
 
-The graphs of figure \ref{fig:neuron-bfr-aftr} show that the trained perceptron is able to predict positions after replacing its Heaviside step function with a logistic sigmoid. The neuron now is able to output continues numbers which allows us to calculate. In addition one can derive the sigmoid function.
+The graphs of figure \ref{fig:neuron-bfr-aftr} show that the trained neuron is able to predict positions after replacing its Heaviside step function with a logistic sigmoid. The neuron is now able to output continuous numbers which allows us to calculate and use different delta error values for updating the weights. As one can see in figure \ref*{fig:neuron-learn} the average error of the neuron is decreasing through the training, which indicates that the neuron is now capable of learning.
 
 \begin{figure}[htbp]
-	\subfigure[The perceptrons average error over all samples is decreasing.]{\label{fig:neuron-learn}\includegraphics[width=0.432\textwidth]{my_images/task3_neuron_learn.png}}
-	\subfigure[The predicted position of the perceptron is close to the real position of the sample data after training. ]{\label{fig:neuron-bfr-aftr}\includegraphics[width=0.568\textwidth]{my_images/task3_neuron_bfr_aftr.png}}
-	\caption{Learning curve and outputs of a perceptron with a sigmoid activation function.}
+	\subfigure[The neurons average error is decreasing over all samples.]{\label{fig:neuron-learn}\includegraphics[width=0.410\textwidth]{my_images/task3_neuron_learn.png}}
+	\subfigure[The predicted position of the neuron is close to the real position of the sample data after training. ]{\label{fig:neuron-bfr-aftr}\includegraphics[width=0.588\textwidth]{my_images/task3_neuron_bfr_aftr.png}}
+	\caption{Learning curve and outputs of a neuron with a sigmoid activation function.}
 	\label{fig:neuron}
 \end{figure}
 

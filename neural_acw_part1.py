@@ -3,7 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import math
+from math import floor
 import random
+
+
+def split_to_test_and_training(data, train_size=0.8):
+    random.shuffle(data)
+    split_idx = floor(len(data) * train_size)
+    trainings_set = data[:split_idx]
+    test_set = data[split_idx:]
+    return trainings_set, test_set
 
 
 def sigmoid(input_value):
@@ -74,19 +83,23 @@ def main():
     data = [x[0] for x in pd.Series.tolist(xls_data.parse('data1'))]
     input_units, learn_rate = 4, 0.05
     activation = sigmoid
-    ac_label = 'Activation f: Step'
+    ac_label = 'Activation f: Sigmoid'
     in_label = 'Input units: ' + str(input_units)
     lr_label = 'learn rate = ' + str(learn_rate)
     # create perceptron with step function
     perceptron = Perceptron(input_units, activation, learning_rate=learn_rate)
 
     # show calculated output of perceptron after training
-    graphs = {'average-error': [], 'best': [], 'output': [], 'delta-error': [], 'o-before': [], 'e-before': [], 'o-after': [],
+    graphs = {'average-error': [], 'best': [], 'output': [], 'delta-error': [], 'o-before': [], 'e-before': [],
+              'o-after': [],
               'e-after': []}
+
+    # trainings_set, test_set = split_to_test_and_training(data, 0.8)
 
     # assess output of data before training
     for idx, val in enumerate(data):
         input_vec = create_input_list(data, input_units, idx)
+        print(input_vec)
         value = perceptron.calc_output(input_vec)
         graphs['o-before'].append(value)
         graphs['e-before'].append(data[idx])
@@ -95,7 +108,8 @@ def main():
     best = 1
     epoch_counter, epochs, error, running = 0, 250, 1, True
     while epoch_counter < epochs and running:
-        indices = list(range(len(data)))
+        indices = list(range(len(data)))  # when training with all data sets
+        # indices = list(range(len(trainings_set)))  # when using cross validation
         random.shuffle(indices)
         iter_count = 0
         error_sum = 0
@@ -121,12 +135,12 @@ def main():
         print()
 
     f, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
-    ax1.title.set_text('Perceptron Output before Training')
+    ax1.title.set_text('Neuron Output before Training')
     ax1.set(xlabel='Samples of track.xls', ylabel='Predicted Position')
     ax1.grid()
     ax1.plot(graphs['e-before'], 'r')
     ax1.plot(graphs['o-before'], 'b')
-    ax2.title.set_text('Perceptron Output after Training (' + str(epochs) + ' Epochs)')
+    ax2.title.set_text('Neuron Output after Training (' + str(epochs) + ' Epochs)')
     ax2.set(xlabel='Samples of track.xls', ylabel='Predicted Position')
     ax2.grid()
     ac = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0, label=ac_label)
@@ -135,11 +149,11 @@ def main():
     p1, = ax2.plot(graphs['e-after'], 'r', label='Real Position')
     p2, = ax2.plot(graphs['o-after'], 'b', label='Predicted Position')
     ax2.legend([ac, iu, lr, p2, p1],
-               [ac_label, in_label, lr_label, 'Predicted Position' , 'Real Position'], prop={'size': 14})
+               [ac_label, in_label, lr_label, 'Predicted Position', 'Real Position'], prop={'size': 14})
 
     # setup plots for errors
     f2, (ax1) = plt.subplots(1, 1, sharey=True)
-    ax1.title.set_text('ACW I: Perceptron Average Error Improvement')
+    ax1.title.set_text('ACW I: Neuron Average Error Improvement')
     ax1.set(xlabel='Epochs', ylabel='Avg. Error in Epoch')
     ax1.grid()
     ac = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0, label=ac_label)
@@ -147,7 +161,7 @@ def main():
     lr = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0, label=lr_label)
     best_error, = ax1.plot(graphs['best'], 'g', label='Lowest NN Error')
     avg_error, = ax1.plot(graphs['average-error'], 'r', label='Avg. Error of Epoch')
-    ax1.legend([ac,iu, lr, avg_error, best_error],
+    ax1.legend([ac, iu, lr, avg_error, best_error],
                [ac_label, in_label, lr_label, 'Avg. Error of Epoch', 'Lowest NN Error'], prop={'size': 14})
 
     plt.show()
