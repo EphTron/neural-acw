@@ -155,18 +155,17 @@ class Network:
         ax1.title.set_text('ACW II: Neural Network before Training')
         ax1.set(xlabel='Set46 Samples', ylabel='Target acquired')
         ax1.grid()
-        ax1.plot(graphs['wanted-output'], 'go', label='Target Output')
-        ax1.plot(graphs['before'], 'bo', label='Untrained NN Output')
-
-        ax2.title.set_text('ACW II: Neural Network after Training (' + str(epochs) + ' Epochs)')
-        ax2.set(xlabel='Set46 Samples', ylabel='Target acquired')
-        ax2.grid()
         nn = ax2.plot([0, 0], 'white', label=nn_label)
         lr = ax2.plot([0, 0], 'white', label=lr_label)
         mo = ax2.plot([0, 0], 'white', label=mo_label)
+        ax1.plot(graphs['wanted-output'], 'go', label='Target Output')
+        ax1.plot(graphs['before'], 'bo', label='Untrained NN Output')
+        ax1.legend(prop={'size': 14})
+        ax2.title.set_text('ACW II: Neural Network after Training (' + str(epochs) + ' Epochs)')
+        ax2.set(xlabel='Set46 Samples', ylabel='Target acquired')
+        ax2.grid()
         ax2.plot(graphs['wanted-output'], 'go', label='Target Output')
         ax2.plot(graphs['after'], 'bo', label='Trained NN Output')
-        ax2.legend(prop={'size': 14})
 
         # setup plots for errors
         f2, (ax3) = plt.subplots(1, 1, sharey=True)
@@ -183,6 +182,55 @@ class Network:
                    [nn_label, lr_label, mo_label, 'Avg. Error of Epoch', 'Avg. Error of Test Set', 'Lowest NN Error'],
                    prop={'size': 14})
 
+        return graphs
+
+def average_graphs(g1,g2,g3):
+    avg_graph = dict()
+    avg_graph['error'] = [sum(x) / 3 for x in zip(g1['error'], g2['error'], g3['error'])]
+    # [sum(x) / 3 for x in zip([1, 1, 1], [2, 2, 2], [3, 3, 3])]
+    avg_graph['test-error'] = [sum(x) / 3 for x in zip(g1['test-error'], g2['test-error'], g3['test-error'])]
+    avg_graph['wanted-output'] = [sum(x) / 3 for x in zip(g1['wanted-output'], g2['wanted-output'], g3['wanted-output'])]
+    avg_graph['best'] = [sum(x) / 3 for x in zip(g1['best'], g2['best'], g3['best'])]
+    avg_graph['before'] = [sum(x) / 3 for x in zip(g1['before'], g2['before'], g3['before'])]
+    avg_graph['after'] = [sum(x) / 3 for x in zip(g1['after'], g2['after'], g3['after'])]
+    return avg_graph
+
+def draw_graph(graphs, strct, learn_rate, momentum, epochs):
+    nn_label = 'NN structure: ' + str(strct)
+    lr_label = 'learn rate = ' + str(learn_rate)
+    mo_label = 'momentum = ' + str(momentum)
+
+    f1, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
+    ax1.title.set_text('ACW II: Neural Network before Training')
+    ax1.set(xlabel='Set46 Samples', ylabel='Target acquired')
+    ax1.grid()
+    nn = ax2.plot([0, 0], 'white', label=nn_label)
+    lr = ax2.plot([0, 0], 'white', label=lr_label)
+    mo = ax2.plot([0, 0], 'white', label=mo_label)
+    ax1.plot(graphs['wanted-output'], 'go', label='Target Output')
+    ax1.plot(graphs['before'], 'bo', label='Untrained NN Output')
+    ax1.legend(prop={'size': 14})
+    ax2.title.set_text('ACW II: Neural Network after Training (' + str(epochs) + ' Epochs)')
+    ax2.set(xlabel='Set46 Samples', ylabel='Target acquired')
+    ax2.grid()
+    ax2.plot(graphs['wanted-output'], 'go', label='Target Output')
+    ax2.plot(graphs['after'], 'bo', label='Trained NN Output')
+
+    # setup plots for errors
+    f2, (ax3) = plt.subplots(1, 1, sharey=True)
+    ax3.title.set_text('ACW II: Neural Network Average Error Improvement')
+    ax3.set(xlabel='Epochs', ylabel='Average MSE')
+    ax3.grid()
+    nn = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0, label=nn_label)
+    lr = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0, label=lr_label)
+    mo = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0, label=mo_label)
+    test_set_err_plot, = ax3.plot(graphs['test-error'], 'grey', label='Avg. Error of Test Set')
+    lowest_err_plot, = ax3.plot(graphs['best'], 'g', label='Lowest NN Error')
+    train_set_err_plot, = ax3.plot(graphs['error'], 'b', label='Avg. Error of Epoch')
+    ax3.legend([nn, lr, mo, train_set_err_plot, test_set_err_plot, lowest_err_plot],
+               [nn_label, lr_label, mo_label, 'Avg. Error of Epoch', 'Avg. Error of Test Set', 'Lowest NN Error'],
+               prop={'size': 14})
+
 
 def main():
     # read data
@@ -190,22 +238,50 @@ def main():
     data = [[float(w) for w in l.split()] for l in file.readlines()]
     print('Loaded ', len(data), 'data sets.')
     random.shuffle(data)
-    # k folds
 
-    # # Test LR 1 from 0.2435 to 0.2126 in 500 epochs
-    # Note oscillates
-    # net = Network(sigmoid, 2, [5], 1)
-    # net.train(500, train_set, test_set, 0.75, 0.00)
+    graph1 = {'error': [1,1], 'test-error': [1,1], 'wanted-output': [1,1], 'best': [1,1], 'before': [1,1], 'after': [1,1]}
+    graph2 = {'error': [2,1], 'test-error': [2,1], 'wanted-output': [2,1], 'best': [2,1], 'before': [2,1], 'after': [2,1]}
+    graph3 = {'error': [3,1], 'test-error': [3,1], 'wanted-output': [3,1], 'best': [3,1], 'before': [3,1], 'after': [3,1]}
+    g = average_graphs(graph1,graph2,graph3)
+    print(g)
 
-    # # Test LR 2 from 0.2465 to 0.1680 in 500 epochs
-    # net = Network(sigmoid, 2, [5], 1)
-    # net.train(500, train_set, test_set, 0.15, 0.00)
+    # Test varying number of layers and nodes
+    # net1 = Network(sigmoid, 2, [3], 1)
+    # g1 = net1.train(250, data, 0.20, 0.005)
+    # net2 = Network(sigmoid, 2, [3], 1)
+    # g2 = net2.train(250, data, 0.20, 0.005)
+    # net3 = Network(sigmoid, 2, [3], 1)
+    # g3 = net3.train(250, data, 0.20, 0.005)
+    # g = average_graphs(g1, g2, g3)
+    # draw_graph(g, [2, 3, 1], 0.20, 0.005, 250)
+    #
+    # net_big_1 = Network(sigmoid, 2, [30], 1)
+    # gb_1 = net_big_1.train(250, data, 0.20, 0.005)
+    # net_big_2 = Network(sigmoid, 2, [30], 1)
+    # gb_2 = net_big_2.train(250, data, 0.20, 0.005)
+    # net_big_3 = Network(sigmoid, 2, [30], 1)
+    # gb_3 = net_big_3.train(250, data, 0.20, 0.005)
+    # g = average_graphs(gb_1, gb_2, gb_3)
+    # draw_graph(g, [2, 30, 1], 0.20, 0.005, 250)
 
-    # # Test LR 3 from 0.2611 to 0.2349 in 250 epochs
-    net = Network(sigmoid, 2, [5, 10], 1)
-    print('before', net.biases)
-    net.train(100, data, 0.25, 0.075)
-    print('after', net.biases)
+    net_two_1 = Network(sigmoid, 2, [5, 5], 1)
+    gt_1 = net_two_1.train(250, data, 0.20, 0.005)
+    net_two_2 = Network(sigmoid, 2, [5, 5], 1)
+    gt_2 = net_two_2.train(250, data, 0.20, 0.005)
+    net_two_3 = Network(sigmoid, 2, [5, 5], 1)
+    gt_3 = net_two_3.train(250, data, 0.20, 0.005)
+    g = average_graphs(gt_1, gt_2, gt_3)
+    draw_graph(g, [2, 5, 5, 1], 0.20, 0.005, 250)
+
+    net_big_two_1 = Network(sigmoid, 2, [20, 20], 1)
+    gbt_1 = net_big_two_1.train(250, data, 0.20, 0.005)
+    net_big_two_2 = Network(sigmoid, 2, [20, 20], 1)
+    gbt_2 = net_big_two_2.train(250, data, 0.20, 0.005)
+    net_big_two_3 = Network(sigmoid, 2, [20, 20], 1)
+    gbt_3 = net_big_two_3.train(250, data, 0.20, 0.005)
+    g = average_graphs(gbt_1, gbt_2, gbt_3)
+    draw_graph(g, [2, 20, 20, 1], 0.20, 0.005, 250)
+
 
     # # Test LR 4 from 0.2611 to 0.2349 in 250 epochs
     # net = Network(sigmoid, 2, [5], 1)
