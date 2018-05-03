@@ -122,19 +122,36 @@ For the second part of this report a neural network with back propagation has be
 
 \subsection*{Varying the number of hidden units and layers}
 
-Changing the number of neurons has an impact on the time needed for training the network, on the improvement through learning and on the probability of learning at all. Figure \ref{fig:average-vary-units} shows that in general networks with more hidden units are learning better than networks with less hidden units. In average the networks with 30~hidden units decreased their error by around 0.23 over 250~epochs while the networks with 3~units only decreased their average error by around 0.02. Although it takes a lot longer to train networks with more nodes,
+Changing the number of units in a hidden layer has an impact on the time needed for training a network, on the improvement through learning and on the probability of learning at all. Figure \ref{fig:3-units} and \ref{fig:30-units} show that in average networks with 30~hidden units learn and perform better than networks with 3~units. The networks with more units decreased their average error by $\sim$0.23 over 250~epochs while the networks with 3~units decreased their error only by $\sim$0.04. Training a lot of different weights might take a longer time, but seems more efficient as the gradient of many different weights are more likely to lead into the right direction. This could be verified by all examples that compared networks with different numbers of hidden units (see figure \ref{fig:55-units} and \ref{fig:2020-units}). Having less weights means that we have fewer modifiable options and are more likely to get stuck in a minimum. Networks with to few hidden neurons don't have the capacity to learn enough of the underlying patterns. At one point networks with too many nodes (> $\sim$130 units) didn't improve any further.
 \begin{figure}[htbp]
-	\subfigure[Averaged outputs of 5~NN with 3~hidden units.]{\label{fig:3-units}\includegraphics[width=0.5\textwidth]{my_images/acw_p2/vary_nodes_layers/improve_avg_2_3_1.png}}
-	\subfigure[Averaged outputs of 5~NN with 30~hidden units]{\label{fig:30-units}\includegraphics[width=0.5\textwidth]{my_images/acw_p2/vary_nodes_layers/improve_avg_2_30_1.png}}
+	\subfigure[Avg. outputs of 5~NN with 3~hidden units.]{\label{fig:3-units}\includegraphics[width=0.5\textwidth]{my_images/acw_p2/vary_nodes_layers/improve_avg2_2_3_1.png}}
+	\subfigure[Avg. outputs of 5~NN with 30~hidden units]{\label{fig:30-units}\includegraphics[width=0.5\textwidth]{my_images/acw_p2/vary_nodes_layers/improve_avg2_2_30_1.png}}
+	\subfigure[Avg. outputs of 5~NN with~2~x 5~hidden~units.]{\label{fig:55-units}\includegraphics[width=0.5\textwidth]{my_images/acw_p2/vary_nodes_layers/improve_avg_2_5_5_1.png}}
+	\subfigure[Avg. outputs of 5~NN with 2 x 20~hidden~units]{\label{fig:2020-units}\includegraphics[width=0.5\textwidth]{my_images/acw_p2/vary_nodes_layers/improve_avg_2_20_20_1.png}}
 	\caption{Averaged error improvement of networks with different hidden units.}
 	\label{fig:average-vary-units}
 \end{figure}
 
 
-
 \subsection*{Varying the learning rate}
 
-discussion of the results as the rate of learning is varied
+The learning rate defines the step size with which we exploit the calculated gradient. If the step size is very small we converge slowly towards a minimum and might not use our full learning potential. It is also more likely that we get stuck in a small local minima. If the step size is too large we might overshoot the minimum (see figure \ref{fig:overshoot})and might start oscillating. Figure \ref{label}
+
+\centering
+\begin{figure}[htbp]
+	\subfigure[Avg. error of a 5~NN with learning rate of 0.05]{\includegraphics[width=0.50\textwidth]{my_images/acw_p2/learn-rate-avg-0_05.png}}
+	\subfigure[Avg. error of a 5~NN with learning rate of 0.5]{\includegraphics[width=0.50\textwidth]{my_images/acw_p2/learn-rate-avg-0_5.png}}
+	\subfigure[Example with low learning rate that got stuck in a local minima.]{\includegraphics[width=0.50\textwidth]{my_images/acw_p2/stuck-in-local-minima.png}}
+	\subfigure[Example with high learning rate that starts oscillating around the minimum.]{\includegraphics[width=0.50\textwidth]{my_images/acw_p2/oscillating.png}}
+	\caption{Aver.}
+	\label{fig:bad-learning-examples}
+\end{figure}
+
+
+\subsection*{The effect of momentum}
+
+By adding momentum to our back propagation we 
+
 
 discussion on the effect of a momentum term
 
